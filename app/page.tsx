@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 
 // ── Types ─────────────────────────────────────────────────────────────
 type Status = 'pending' | 'paid' | 'overdue' | 'draft';
@@ -61,8 +61,25 @@ const STATUS_COLORS: Record<Status, string> = {
   draft: 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400',
 };
 
+// ── Persistence key ───────────────────────────────────────────────────
+const STORAGE_KEY = 'invoice-generator-draft';
+
+// ── Load saved data from localStorage (client-side only) ──────────────
+function loadSaved(): InvoiceData {
+  if (typeof window === 'undefined') return DEFAULT_DATA;
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return DEFAULT_DATA;
+    const saved = JSON.parse(raw) as Partial<InvoiceData>;
+    // Merge so any new fields added later still get their defaults
+    return { ...DEFAULT_DATA, ...saved };
+  } catch {
+    return DEFAULT_DATA;
+  }
+}
+
 // ── Default data ───────────────────────────────────────────────────────
-const DEFAULT: InvoiceData = {
+const DEFAULT_DATA: InvoiceData = {
   invoiceNumber: 'EINV-2026-10',
   status: 'pending',
   invoiceDate: new Date().toISOString().split('T')[0],
@@ -310,8 +327,43 @@ function InvoiceContent({ data }: { data: InvoiceData }) {
 
 // ── Main Page ─────────────────────────────────────────────────────────
 export default function InvoicePage() {
-  const [data, setData] = useState<InvoiceData>(DEFAULT);
+  // Always start with DEFAULT_DATA so server and client render the same HTML,
+  // then load localStorage after hydration to avoid the mismatch error.
+  const [data, setData] = useState<InvoiceData>(DEFAULT_DATA);
+  const [hydrated, setHydrated] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+  const [savedAt, setSavedAt] = useState<string | null>(null);
+  const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Step 1 — after mount, overwrite state with whatever was saved
+  useEffect(() => {
+    setData(loadSaved());
+    setHydrated(true);
+  }, []);
+
+  // Step 2 — auto-save on every change, but only after the load above has run
+  //           so we don't immediately overwrite localStorage with DEFAULT_DATA
+  useEffect(() => {
+    if (!hydrated) return;
+    if (saveTimer.current) clearTimeout(saveTimer.current);
+    saveTimer.current = setTimeout(() => {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        setSavedAt(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+      } catch {
+        // localStorage unavailable (private browsing quota, etc.) — fail silently
+      }
+    }, 600);
+    return () => {
+      if (saveTimer.current) clearTimeout(saveTimer.current);
+    };
+  }, [data, hydrated]);
+
+  const clearSaved = useCallback(() => {
+    localStorage.removeItem(STORAGE_KEY);
+    setData({ ...DEFAULT_DATA, invoiceDate: new Date().toISOString().split('T')[0] });
+    setSavedAt(null);
+  }, []);
 
   const update = useCallback(<K extends keyof InvoiceData>(field: K, value: InvoiceData[K]) => {
     setData((prev) => ({ ...prev, [field]: value }));
@@ -364,6 +416,27 @@ export default function InvoicePage() {
               </div>
             </div>
             <div className="flex items-center gap-2">
+              {/* Auto-saved indicator */}
+              {savedAt && (
+                <span className="hidden sm:flex items-center gap-1 text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
+                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Saved {savedAt}
+                </span>
+              )}
+              {/* Clear form */}
+              <button
+                onClick={clearSaved}
+                title="Clear all fields and start fresh"
+                className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+                Clear
+              </button>
+              {/* Preview */}
               <button
                 onClick={() => setShowPreview(true)}
                 className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 border border-gray-200 dark:border-gray-700 transition-colors"
