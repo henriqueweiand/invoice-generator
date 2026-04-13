@@ -1,3 +1,48 @@
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ── Print Styles ────────────────────────────────────────────── */
+@media print {
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    background: white !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  @page {
+    size: A4;
+    margin: 0;
+  }
+}
+
+/* ── Screen-only: hide print layout ─────────────────────────── */
+@media screen {
+  .print-only {
+    display: none !important;
+  }
+}
+
+/* ── Preview modal: show print layout inside modal ───────────── */
+.preview-active .print-only {
+  display: block !important;
+}
+
+/* ── Signature / cursive font ────────────────────────────────── */
+.font-signature {
+  font-family: 'Dancing Script', cursive;
+}

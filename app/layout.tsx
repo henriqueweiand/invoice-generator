@@ -5,8 +5,8 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'My App',
-  description: '',
+  title: 'Invoice Generator',
+  description: 'Create and print professional invoices',
 }
 
 export default function RootLayout({
