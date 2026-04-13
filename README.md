@@ -13,7 +13,7 @@ You fill out a form with all the invoice data and the app renders a print-ready 
 The form covers everything a typical invoice needs:
 
 - **Invoice details** — number, status (pending / paid / overdue / draft), date, and currency (USD, EUR, GBP, BRL, CAD, AUD)
-- **Bill From** — your company name and address
+- **Bill From** — your company name and address.
 - **Bill To** — client name and address
 - **Tax details** — optional field for VAT number or tax ID
 - **Line items** — add as many rows as needed, each with description, quantity, unit, and rate; totals are calculated live
@@ -60,13 +60,13 @@ REF: a2bbb9c8-...                            PAGE 1 OUT OF 1
 
 ## Tech stack
 
-| Layer | Choice |
-|---|---|
-| Framework | Next.js 15 (static export) |
-| Styling | Tailwind CSS v3 with dark mode (`media` strategy) |
-| Fonts | Inter (UI), Dancing Script (invoice signature) |
-| Deployment | Cloudflare Pages via Wrangler |
-| PDF generation | Browser native Print → Save as PDF |
+| Layer          | Choice                                            |
+| -------------- | ------------------------------------------------- |
+| Framework      | Next.js 15 (static export)                        |
+| Styling        | Tailwind CSS v3 with dark mode (`media` strategy) |
+| Fonts          | Inter (UI), Dancing Script (invoice signature)    |
+| Deployment     | Cloudflare Pages via Wrangler                     |
+| PDF generation | Browser native Print → Save as PDF                |
 
 No external PDF libraries. No server. No database.
 
