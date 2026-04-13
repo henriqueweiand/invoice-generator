@@ -2,7 +2,7 @@
 # This file is used when deploying with `wrangler pages deploy`
 # For dashboard deploys, set these values in the Cloudflare Pages UI instead.
 
-name = "my-app"
+name = "invoice-generator"
 pages_build_output_dir = "out"
 
 # Uncomment to add environment variables:
