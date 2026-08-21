@@ -34,7 +34,7 @@ Company Name                          I N V O I C E
 Bill To:                              # EINV-2026-10
   Client Name                         Status   pending
   Address                             Date     March 24, 2026
-  City / ZIP / Country                Total    USD 7,650.00
+  City / ZIP / Country                Total    USD 1,650.00
 
 Bill From:                Tax Details:
   Your Company              (optional tax info)
@@ -43,12 +43,12 @@ Bill From:                Tax Details:
 ┌─────────────────────────┬────────────┬───────────┬───────────┐
 │ DESCRIPTION             │ QTY (UNIT) │    RATE   │   TOTAL   │
 ├─────────────────────────┼────────────┼───────────┼───────────┤
-│ Software development    │  1 (items) │ USD 7,650 │ USD 7,650 │
+│ Software development    │  1 (items) │ USD 7,650 │ USD 1,650 │
 │                         │            │       VAT │  USD 0.00 │
-│                         │            │ Total Due │ USD 7,650 │
+│                         │            │ Total Due │ USD 1,650 │
 └─────────────────────────┴────────────┴───────────┴───────────┘
 
-Contact: +55 47 99240 2547        Your Company Name (cursive)
+Contact: +99 99 9999 9999        Your Company Name (cursive)
 
 Note  - Contract value
       - English lessons
