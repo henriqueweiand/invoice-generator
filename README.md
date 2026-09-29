@@ -2,7 +2,7 @@
 
 A fast, browser-based invoice builder. Fill in your details, preview the result, and use the browser's built-in Print → Save as PDF to generate a clean, professional invoice — no backend, no accounts, no data ever leaves your machine.
 
-**Live URL:** https://invoice-generator.pages.dev
+**Live URL:** https://invoice-generator.henriqueweiand.workers.dev
 
 ---
 
@@ -62,10 +62,10 @@ REF: a2bbb9c8-...                            PAGE 1 OUT OF 1
 
 | Layer          | Choice                                            |
 | -------------- | ------------------------------------------------- |
-| Framework      | Next.js 15 (static export)                        |
-| Styling        | Tailwind CSS v3 with dark mode (`media` strategy) |
+| Framework      | Next.js 16 (static export)                        |
+| Styling        | Tailwind CSS v4 with dark mode (`media` strategy) |
 | Fonts          | Inter (UI), Dancing Script (invoice signature)    |
-| Deployment     | Cloudflare Pages via Wrangler                     |
+| Deployment     | Cloudflare Workers (static assets) via Wrangler   |
 | PDF generation | Browser native Print → Save as PDF                |
 
 No external PDF libraries. No server. No database.
@@ -75,16 +75,18 @@ No external PDF libraries. No server. No database.
 ## Running locally
 
 ```bash
-npm install
-npm run dev
+bun install
+bun run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000).
 
 ## Building & deploying
 
+Pushing to `main` deploys automatically through Cloudflare Workers Builds (`bun install`, `bun run build`, `npx wrangler deploy`). To deploy manually:
+
 ```bash
-npm run deploy
+bun run deploy
 ```
 
-This runs `next build` and then `wrangler pages deploy` to push to Cloudflare Pages.
+Dependencies are pinned in `bun.lock`. Dependabot opens weekly update PRs; patch and minor bumps auto-merge, majors wait for review.
